@@ -1,39 +1,39 @@
 // Orchestrator: single-prompt agent selection → agent respond
 
-import { geminiGenerate } from '../gemini.js';
-import { JoyAgent } from '../agents/ExampleJoyAgent.js';
-import { SadAgent } from '../agents/ExampleSadAgent.js';
+import { geminiGenerate } from "../gemini.js";
+import { CasualAgent } from "../agents/CasualAgent.js";
+import { SadAgent } from "../agents/SadAgent.js";
 
 const SELECTION_SCHEMA = {
-  type: 'OBJECT',
-  properties: {
-    agent: { type: 'STRING' },
-    reasons: { type: 'STRING' }
-  },
-  required: ['agent']
+    type: "OBJECT",
+    properties: {
+        agent: { type: "STRING" },
+        reasons: { type: "STRING" },
+    },
+    required: ["agent"],
 };
 export class Orchestrator {
-  constructor() {
-    this.name = 'joy_sad';
-    this.agentByName = {
-      joy: new JoyAgent(),
-      sad: new SadAgent()
-    };
-  }
+    constructor() {
+        this.name = "casual_sad";
+        this.agentByName = {
+            casual: new CasualAgent(),
+            sad: new SadAgent(),
+        };
+    }
 
-  async _respondWith(agentName, contents) {
-    const agent = this.agentByName[agentName] || this.agentByName.joy;
-    const res = await agent.respond(contents);
-    return res?.text || '';
-  }
+    async _respondWith(agentName, contents) {
+        const agent = this.agentByName[agentName] || this.agentByName.casual;
+        const res = await agent.respond(contents);
+        return res?.text || "";
+    }
 
-  async orchestrate(contents) {
-    const orchestratorPrompt = `Your job is to choose which emotional agents should respond to the user right now.
+    async orchestrate(contents) {
+        const orchestratorPrompt = `Your job is to choose which emotional agents should respond to the user right now.
         Think in two steps:
         1) What emotions would best connect with the user right now, and what do they need (e.g., reassurance, validation, encouragement, caution)? Prioritize the latest user message while considering prior user messages with light recency weighting.
         2) Pick the agent whose voice best matches that need.
 
-        Available agents: "joy", "sad". ONLY USE ONE OF THESE AGENTS.
+        Available agents: "casual", "sad". ONLY USE ONE OF THESE AGENTS.
 
         Constraints:
         - Speak only through structured output. No extra text.
@@ -42,30 +42,33 @@ export class Orchestrator {
 
         Output strictly as JSON:
         {
-          "agent": "joy",
+          "agent": "casual",
           "reasons": "User celebrated good news; needs warm encouragement"
         }`;
 
-    const result = await geminiGenerate({
-      contents,
-      systemPrompt: orchestratorPrompt,
-      config: { responseMimeType: 'application/json', responseSchema: SELECTION_SCHEMA }
-    });
+        const result = await geminiGenerate({
+            contents,
+            systemPrompt: orchestratorPrompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: SELECTION_SCHEMA,
+            },
+        });
 
-    let agent = 'joy';
-    let reasons = 'Defaulted to joy';
-    
-    try {
-      const parsed = JSON.parse(result.text || '{}');
-      agent = parsed?.agent;
-      if (parsed?.reasons) reasons = String(parsed.reasons);
-    } catch (_) {}
+        let agent = "casual";
+        let reasons = "Defaulted to casual";
 
-    const text = await this._respondWith(agent, contents);
+        try {
+            const parsed = JSON.parse(result.text || "{}");
+            agent = parsed?.agent;
+            if (parsed?.reasons) reasons = String(parsed.reasons);
+        } catch (_) {}
 
-    const frameSet = { frames: { persona: { value: agent, rationale: [reasons] } } };
-    return { assistantMessage: text || '', frameSet, agent, reasons };
-  }
+        const text = await this._respondWith(agent, contents);
+
+        const frameSet = {
+            frames: { persona: { value: agent, rationale: [reasons] } },
+        };
+        return { assistantMessage: text || "", frameSet, agent, reasons };
+    }
 }
-
-

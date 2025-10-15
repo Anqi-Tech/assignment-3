@@ -1,13 +1,13 @@
 <script>
   import { onMount } from 'svelte';
-  
+
   let input = '';
   let messages = [];
   let debugOpen = false;
   let replierInput = null; // { frameSet, contextCount, agent, reasons }
   let isLoading = false;
   let errorMsg = '';
-  
+
   const EMOJI = { joy: '🌟', sad: '💙', anger: '🔥' };
   const EMOTION_ORDER = ['sad', 'anger', 'joy'];
 
