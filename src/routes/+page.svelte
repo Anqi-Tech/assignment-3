@@ -34,11 +34,7 @@
   async function send() {
     const content = input.trim();
     if (!content) return;
-    const userMessage = { role: 'user', content };
-    messages = [...messages, userMessage];
-    // Keep a snapshot pointing at the current array so we can rebuild from the
-    // last "stable" state when the assistant reply returns. This avoids dupes.
-    const conversationSnapshot = messages; // intentional reference
+    messages = [...messages, { role: 'user', content }];
     input = '';
     isLoading = true;
     errorMsg = '';
@@ -54,8 +50,7 @@
       return;
     }
     if (data.assistantMessage) {
-      // Rebuild from the snapshot to avoid duplicating the user's message.
-      messages = [...conversationSnapshot, { role: 'assistant', content: data.assistantMessage, segments: data.segments || [] }];
+      messages = [...messages, { role: 'assistant', content: data.assistantMessage, segments: data.segments || [] }];
       replierInput = data.replierInput || null;
     }
     isLoading = false;
