@@ -12,7 +12,7 @@ const SELECTION_SCHEMA = {
     required: ["agent"],
 };
 
-export class RoutingOrchestrator {
+export class Orchestrator {
     constructor() {
         this.name = "casual_angry_shy";
         this.agentByName = {
