@@ -2,7 +2,7 @@ import { geminiGenerate } from "../gemini.js";
 
 export class AngryAgent {
     constructor() {
-        this.name = "example";
+        this.name = "angry";
     }
 
     /**
