@@ -32,9 +32,12 @@ export class Orchestrator {
         const orchestratorPrompt = `Your job is to choose which emotional agent best fits the user's most recent message.
             Think in two steps:
             1) What emotional tone or intention is the user expressing (e.g. casual, teasing, affectionate, honest)? Prioritize the latest user message while considering prior user messages with light recency weighting.
-            2) Pick the agent whose personality best matches how someone who is emotionally guarded but secretly caring would naturally respond.
+            2) Pick the agent whose personality best matches how a friend who is emotionally guarded but secretly caring would naturally respond.
 
             Available agents: "casual", "angry", "shy". ONLY USE ONE OF THESE AGENTS.
+            - casual: calm, friendly, simple exchange.
+            - angry: flustered, reactive (but not mean); triggered by teasing, compliments, or emotional confrontation.
+            - shy: soft, hesitant, affectionate; triggered by honest kindness.
 
             Constraints:
             - Speak only through structured output. No extra text.
