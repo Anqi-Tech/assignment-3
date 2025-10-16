@@ -1,6 +1,6 @@
 import { json } from "@sveltejs/kit";
-import { Orchestrator } from "$lib/orchestrators/RoutingOrchestrator.js";
-// import { Orchestrator } from "$lib/orchestrators/AggregatorOrchestrator.js";
+// import { Orchestrator } from "$lib/orchestrators/RoutingOrchestrator.js";
+import { Orchestrator } from "$lib/orchestrators/AggregatorOrchestrator.js";
 
 /**
  * Handle chat POST requests for a single-turn pipeline execution.
